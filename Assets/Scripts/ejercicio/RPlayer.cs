@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class RPlayer : MonoBehaviour
 {
     public int velocidad;
-    private Rigidbody2D jugador;
-    private SpriteRenderer spritee;
+    public Rigidbody2D jugador;
+    public SpriteRenderer spritee;
     private int fuerzaSalto;
     private Animator animator;
     public int puntuacion;
@@ -17,7 +17,7 @@ public class RPlayer : MonoBehaviour
     public int numeroPowerUps;
 
     public int tiempoNivel;
-    private float tiempoInicio;
+    private float tiempoInicio, intervaloBala;
     private int tiempoEmpleado;
     
     public Canvas canvas;
@@ -29,6 +29,8 @@ public class RPlayer : MonoBehaviour
     private AudioSource audio;
     public ControlDatosJuego datosJuego;
 
+    public LayerMask Ground;
+
     public GameObject blaster, bullet;
     // Start is called before the first frame update
     void Start()
@@ -37,7 +39,7 @@ public class RPlayer : MonoBehaviour
         spritee = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         velocidad = 10;
-        fuerzaSalto = 6;
+        fuerzaSalto = 10;
 
         vulnerable = true;
 
@@ -86,17 +88,27 @@ public class RPlayer : MonoBehaviour
 
         hud.SetTiempo(tiempoEmpleado);
         // hud.SetTiempo(Time.deltaTime);
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
-            
-            Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+            intervaloBala += Time.deltaTime;
+            if (intervaloBala >= 0.25f)
+            {
+                Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+                intervaloBala = 0;
+            }
         }
+        else
+        {
+            intervaloBala = 0;
+        }
+        //Debug.Log(intervaloBala);
+
     }
 
     private void Ganado()
     {
         datosJuego.Ganado = true;
-        SceneManager.LoadScene("Gamando");
+        SceneManager.LoadScene("Ganados");
     }
 
     private void Perdido()
@@ -119,11 +131,17 @@ public class RPlayer : MonoBehaviour
     private void AnimarJugador()
     {
         if (TocandoSuelo() == false)
-            animator.Play("jump");
+        {
+            
+            animator.Play("onAir");
+
+        }
         else
            if (jugador.velocity.x == 0)
         {
             animator.Play("Iddle");
+            animator.SetBool("aire", false);
+            
 
         }
         else animator.Play("run");
@@ -153,7 +171,7 @@ public class RPlayer : MonoBehaviour
     {
 
         RaycastHit2D toca = Physics2D.Raycast(transform.position + new Vector3(0, -1.6f, 0)
-            , Vector2.down, 1f);
+            , Vector2.down, 1f, Ground);
         return toca.collider != null;
 
     }

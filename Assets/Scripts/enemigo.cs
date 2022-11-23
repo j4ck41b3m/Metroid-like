@@ -9,15 +9,19 @@ public class enemigo : MonoBehaviour
     public Vector3 posicionInicial;
     public Vector3 posicionFinal;
     private float duracionTemblor;
-    public bool moviendoAFin;
+    public bool moviendoAFin, vulnerable;
+    public int vidas;
+    private SpriteRenderer spritee;
     // Start is called before the first frame update
     void Start()
     {
+        vulnerable = true;
         posicionInicial = transform.position;
         posicionFinal = new Vector3(posicionInicial.x, posicionInicial.y + 4, posicionInicial.z);
         moviendoAFin = true;
         velocidad = 5.5f;
         duracionTemblor = 1;
+        spritee = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -40,6 +44,26 @@ public class enemigo : MonoBehaviour
         }
     }
 
+    private void HacerVulnerable()
+    {
+        vulnerable = true;
+        spritee.color = Color.white;
+    }
+    public void QuitarVidas()
+    {
+        if (vulnerable)
+        {
+            vulnerable = false;
+            if (--vidas == 0)
+            {
+                Destroy(gameObject);
+            }
+            spritee.color = Color.red;
+            Invoke("HacerVulnerable", 1f);
+        }
+
+
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
