@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private bool derecha;
+    private bool shooting;
     //private float velo;
     public GameObject player;
     // Start is called before the first frame update
@@ -12,12 +13,13 @@ public class Bullet : MonoBehaviour
     {
         Invoke("DestroyBullet", 5f);
         player = GameObject.Find("Player");
+        derecha = player.GetComponent<RPlayer>().spritee.flipX;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-      derecha = player.GetComponent<RPlayer>().spritee.flipX;
         if (derecha == false)
         {
             gameObject.transform.Translate(10 * Time.deltaTime, 0, 0);
@@ -34,7 +36,10 @@ public class Bullet : MonoBehaviour
     
     
 
-   
+   private void Shoot()
+    {
+
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
