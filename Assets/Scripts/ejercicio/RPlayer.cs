@@ -13,7 +13,7 @@ public class RPlayer : MonoBehaviour
     private Animator animator;
     public int puntuacion;
     public int vidas;
-    private bool vulnerable;
+    public bool vulnerable;
     public int numeroPowerUps;
 
     public int tiempoNivel;
@@ -76,7 +76,7 @@ public class RPlayer : MonoBehaviour
             jugador.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
         }
         AnimarJugador();
-        Debug.Log(jugador.velocity.x);
+        //Debug.Log(jugador.velocity.x);
         //Debug.Log(Input.GetAxis("Horizontal"));
 
         tiempoEmpleado = (int)Time.time - (int)tiempoInicio;

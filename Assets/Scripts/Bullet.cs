@@ -11,26 +11,24 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         Invoke("DestroyBullet", 5f);
-        GetComponent<RPlayer>();
-
+        player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        derecha = GetComponent<RPlayer>().spritee.flipX;
-
-        if (derecha == true)
+      derecha = player.GetComponent<RPlayer>().spritee.flipX;
+        if (derecha == false)
         {
             gameObject.transform.Translate(10 * Time.deltaTime, 0, 0);
 
         }
-        else if (derecha == false)
+        else if (derecha == true)
         {
             gameObject.transform.Translate(-10 * Time.deltaTime, 0, 0);
 
         }
-        Debug.Log(derecha);
+        Debug.Log("Es " + derecha);
 
     }
     
