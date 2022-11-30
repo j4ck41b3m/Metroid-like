@@ -5,7 +5,8 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     private bool derecha;
-    private bool shooting;
+    private bool up;
+    public int speed;
     //private float velo;
     public GameObject player;
     // Start is called before the first frame update
@@ -14,22 +15,30 @@ public class Bullet : MonoBehaviour
         Invoke("DestroyBullet", 5f);
         player = GameObject.Find("Player");
         derecha = player.GetComponent<RPlayer>().spritee.flipX;
+        up = player.GetComponent<RPlayer>().up;
+        speed = 20;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (derecha == false)
+        if (up == false)
         {
-            gameObject.transform.Translate(10 * Time.deltaTime, 0, 0);
+            if (derecha == false)
+            {
+                gameObject.transform.Translate(speed * Time.deltaTime, 0, 0);
 
-        }
-        else if (derecha == true)
-        {
-            gameObject.transform.Translate(-10 * Time.deltaTime, 0, 0);
+            }
+            else if (derecha == true)
+            {
+                gameObject.transform.Translate(-1 * speed * Time.deltaTime, 0, 0);
 
+            }
         }
+        else
+            gameObject.transform.Translate(0, 1 * speed * Time.deltaTime, 0);
+
         Debug.Log("Es " + derecha);
 
     }

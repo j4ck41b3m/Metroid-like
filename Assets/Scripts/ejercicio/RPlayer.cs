@@ -13,7 +13,7 @@ public class RPlayer : MonoBehaviour
     private Animator animator;
     public int puntuacion;
     public int vidas;
-    public bool vulnerable;
+    public bool vulnerable, shottan, up;
     public int numeroPowerUps;
 
     public int tiempoNivel;
@@ -31,7 +31,7 @@ public class RPlayer : MonoBehaviour
 
     public LayerMask Ground;
 
-    public GameObject blaster, bullet;
+    public GameObject blaster, upblaster, bullet, upbullet;
     // Start is called before the first frame update
     void Start()
     {
@@ -60,13 +60,13 @@ public class RPlayer : MonoBehaviour
         if (jugador.velocity.x > 0)
         {
             spritee.flipX = false;
-            blaster.transform.position = new Vector3(transform.position.x + 0.941f, blaster.transform.position.y, blaster.transform.position.z);
+            blaster.transform.position = new Vector3(transform.position.x + 1.188f, blaster.transform.position.y, blaster.transform.position.z);
 
         }
         else if (jugador.velocity.x < 0)
         {
             spritee.flipX = true;
-            blaster.transform.position = new Vector3(transform.position.x - 0.941f, blaster.transform.position.y, blaster.transform.position.z);
+            blaster.transform.position = new Vector3(transform.position.x - 1.188f, blaster.transform.position.y, blaster.transform.position.z);
 
 
         }
@@ -88,21 +88,65 @@ public class RPlayer : MonoBehaviour
 
         hud.SetTiempo(tiempoEmpleado);
         // hud.SetTiempo(Time.deltaTime);
-        if (Input.GetKey(KeyCode.Mouse0))
+
+        if (Input.GetKey(KeyCode.W))
         {
-            intervaloBala += Time.deltaTime;
-            if (intervaloBala >= 0.25f)
+            up = true;
+           
+        }
+        else up = false;
+
+            if (Input.GetKey(KeyCode.Mouse0))
+        {
+            
+            
+
+            if (jugador.velocity.x != 0)
             {
-                Instantiate(bullet, blaster.transform.position, Quaternion.identity);
-                intervaloBala = 0;
+                animator.Play("runNshoot");
+                shottan = true;
+                intervaloBala += Time.deltaTime;
+                if (intervaloBala >= 0.2f)
+                {
+                    Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+                    intervaloBala = 0;
+                }
+
             }
+            else if (jugador.velocity.x == 0)
+            {
+                if (up == true)
+                {
+                    if (intervaloBala >= 0.2f)
+                    {
+                        Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
+                        intervaloBala = 0;
+                    }
+                    up = true;
+                }
+                else
+                {
+                    animator.Play("shoot");
+
+                    up = false; 
+                }
+            }
+
         }
         else
         {
             intervaloBala = 0;
+            shottan = false;
         }
         //Debug.Log(intervaloBala);
 
+    }
+
+    public void Shoot()
+    {
+        shottan = true;
+        Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+        
     }
 
     private void Ganado()
@@ -132,19 +176,34 @@ public class RPlayer : MonoBehaviour
     {
         if (TocandoSuelo() == false)
         {
-            
+
             animator.Play("onAir");
 
         }
         else
            if (jugador.velocity.x == 0)
         {
-            animator.Play("Iddle");
-            animator.SetBool("aire", false);
-            
+            if (shottan != true)
+            {
+                if (up != true)
+                {
+                    animator.Play("Iddle");
+
+                }
+                else animator.Play("shootUP");
+
+                animator.SetBool("aire", false);
+                shottan = false;
+            }
+           
 
         }
-        else animator.Play("run");
+        else
+            if (shottan != true)
+        {
+            animator.Play("run");
+            shottan = false;
+        }
         /*else
              if (jugador.velocity.x > 1 || jugador.velocity.x <= -1 && jugador.velocity.y == 0)
             animator.Play("run");
