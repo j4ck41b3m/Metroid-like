@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
 {
     private bool derecha;
     private bool up;
-    public int speed;
+    public int speed, daño;
     //private float velo;
     public GameObject player;
     // Start is called before the first frame update
@@ -39,7 +39,7 @@ public class Bullet : MonoBehaviour
         else
             gameObject.transform.Translate(0, 1 * speed * Time.deltaTime, 0);
 
-        Debug.Log("Es " + derecha);
+       // Debug.Log("Es " + derecha);
 
     }
     
@@ -59,7 +59,7 @@ public class Bullet : MonoBehaviour
         }
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.GetComponent<enemigo>().QuitarVidas();
+            collision.gameObject.GetComponent<enemigo>().QuitarVidas(daño);
 
 
         }

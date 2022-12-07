@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: charge
+  m_Name: chargeUP
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -23,8 +23,8 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: 2
-        inSlope: 0
-        outSlope: 0
+        inSlope: Infinity
+        outSlope: Infinity
         tangentMode: 136
         weightedMode: 0
         inWeight: 0
@@ -33,13 +33,13 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SortingOrder
-    path: Blaster
+    path: UpBlaster
     classID: 212
     script: {fileID: 0}
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 2a5c2f3ca4ae14e7e91149316db1e054, type: 3}
+      value: {fileID: 21300000, guid: b6c2d3a1d0b194296ac57df14d20e8ad, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,7 +50,7 @@ AnimationClip:
     - time: 0.083333336
       value: {fileID: 21300000, guid: 1cafae377352e4777bf22d10ddbf1be0, type: 3}
     attribute: m_Sprite
-    path: Blaster
+    path: UpBlaster
     classID: 212
     script: {fileID: 0}
   m_SampleRate: 24
@@ -61,6 +61,13 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
+      path: 4137628807
+      attribute: 3762991556
+      script: {fileID: 0}
+      typeID: 212
+      customType: 26
+      isPPtrCurve: 0
+    - serializedVersion: 2
       path: 0
       attribute: 0
       script: {fileID: 0}
@@ -68,21 +75,14 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     - serializedVersion: 2
-      path: 426732286
+      path: 4137628807
       attribute: 0
       script: {fileID: 0}
       typeID: 212
       customType: 23
       isPPtrCurve: 1
-    - serializedVersion: 2
-      path: 426732286
-      attribute: 3762991556
-      script: {fileID: 0}
-      typeID: 212
-      customType: 26
-      isPPtrCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 2a5c2f3ca4ae14e7e91149316db1e054, type: 3}
+    - {fileID: 21300000, guid: b6c2d3a1d0b194296ac57df14d20e8ad, type: 3}
     - {fileID: 21300000, guid: e7bc1a619076947c3b3bb3d4a577127e, type: 3}
     - {fileID: 21300000, guid: 1cafae377352e4777bf22d10ddbf1be0, type: 3}
   m_AnimationClipSettings:
@@ -112,8 +112,8 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: 2
-        inSlope: 0
-        outSlope: 0
+        inSlope: Infinity
+        outSlope: Infinity
         tangentMode: 136
         weightedMode: 0
         inWeight: 0
@@ -122,7 +122,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_SortingOrder
-    path: Blaster
+    path: UpBlaster
     classID: 212
     script: {fileID: 0}
   m_EulerEditorCurves: []

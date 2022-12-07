@@ -49,12 +49,13 @@ public class enemigo : MonoBehaviour
         vulnerable = true;
         spritee.color = Color.white;
     }
-    public void QuitarVidas()
+    public void QuitarVidas(int daño)
     {
         if (vulnerable)
         {
             vulnerable = false;
-            if (--vidas == 0)
+            vidas -= daño;
+            if (vidas <= 0)
             {
                 Destroy(gameObject);
             }

@@ -223,6 +223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
+  "da\xF1o": 5
   player: {fileID: 0}
 --- !u!50 &3934269686364160707
 Rigidbody2D:

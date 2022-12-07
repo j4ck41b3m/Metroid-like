@@ -10,7 +10,7 @@ public class Powerup : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             collision.gameObject.GetComponent<RPlayer>().IncrementarPuntuacion(cantidad);
-            collision.gameObject.GetComponent<RPlayer>().DecrementarPowerUps();
+            collision.gameObject.GetComponent<RPlayer>().IncrementarPowerUps();
 
             Destroy(gameObject);
         }
