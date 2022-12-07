@@ -13,7 +13,7 @@ public class RPlayer : MonoBehaviour
     private Animator animator;
     public int puntuacion;
     public int vidas;
-    public bool vulnerable, shottan, up;
+    public bool vulnerable, shottan, up, charged;
     public int numeroPowerUps;
 
     public int tiempoNivel;
@@ -31,7 +31,7 @@ public class RPlayer : MonoBehaviour
 
     public LayerMask Ground;
 
-    public GameObject blaster, upblaster, bullet, upbullet;
+    public GameObject blaster, upblaster, bullet, upbullet, super;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,16 +57,24 @@ public class RPlayer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (numeroPowerUps > 0)
+        {
+            charged = true;
+        }
+        else charged = false;
+        Debug.Log(intervaloBala);
         if (jugador.velocity.x > 0)
         {
             spritee.flipX = false;
             blaster.transform.position = new Vector3(transform.position.x + 1.188f, blaster.transform.position.y, blaster.transform.position.z);
+            upblaster.transform.position = new Vector3(transform.position.x + 0.25f, upblaster.transform.position.y, upblaster.transform.position.z);
 
         }
         else if (jugador.velocity.x < 0)
         {
             spritee.flipX = true;
             blaster.transform.position = new Vector3(transform.position.x - 1.188f, blaster.transform.position.y, blaster.transform.position.z);
+            upblaster.transform.position = new Vector3(transform.position.x - 0.25f, upblaster.transform.position.y, upblaster.transform.position.z);
 
 
         }
@@ -92,31 +100,87 @@ public class RPlayer : MonoBehaviour
         if (Input.GetKey(KeyCode.W))
         {
             up = true;
+            shottan = false;
            
         }
         else up = false;
 
-            if (Input.GetKey(KeyCode.Mouse0))
-        {
-            
-            
+           if (Input.GetKey(KeyCode.Mouse0))
+           {
 
-            if (jugador.velocity.x != 0)
+            if (TocandoSuelo() == true)
             {
-                animator.Play("runNshoot");
-                shottan = true;
-                intervaloBala += Time.deltaTime;
-                if (intervaloBala >= 0.2f)
+                if (jugador.velocity.x > 0.005f || jugador.velocity.x < -0.005f)
                 {
-                    Instantiate(bullet, blaster.transform.position, Quaternion.identity);
-                    intervaloBala = 0;
-                }
+                    animator.Play("runNshoot");
+                    shottan = true;
+                    up = false;
+                    intervaloBala += Time.deltaTime;
+                    if (intervaloBala >= 0.2f)
+                    {
+                        if (charged)
+                        {
+                            Instantiate(super, blaster.transform.position, Quaternion.identity);
+                            numeroPowerUps--;
+                        }
+                        else
+                        Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+                        intervaloBala = 0;
+                    }
 
+                }
+                else if (jugador.velocity.x < 0.005f && jugador.velocity.x > -0.005f)
+                {
+                    if (up == true)
+                    {
+                        intervaloBala += Time.deltaTime;
+
+                        if (intervaloBala >= 0.2f)
+                        {
+                            if (charged)
+                            {
+                                Instantiate(super, upblaster.transform.position, Quaternion.identity);
+                                numeroPowerUps--;
+
+                            }
+                            else
+                                Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
+                            intervaloBala = 0;
+                        }
+                        up = true;
+                    }
+                    else if (up == false)
+                    {
+                        intervaloBala += Time.deltaTime;
+
+                        if (charged)
+                        {
+                            animator.Play("charge");
+
+                            if (intervaloBala >= 0.2f)
+                            {
+                                    Instantiate(super, blaster.transform.position, Quaternion.identity);
+                                intervaloBala = 0;
+
+                            }
+                            numeroPowerUps--;
+
+
+                        }
+                        else
+                            animator.Play("shoot");
+
+                        up = false;
+                    }
+                }
             }
-            else if (jugador.velocity.x == 0)
+            else
             {
+                animator.Play("onAir");
                 if (up == true)
                 {
+                    intervaloBala += Time.deltaTime;
+
                     if (intervaloBala >= 0.2f)
                     {
                         Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
@@ -124,21 +188,26 @@ public class RPlayer : MonoBehaviour
                     }
                     up = true;
                 }
-                else
+                else if (up == false)
                 {
-                    animator.Play("shoot");
-
-                    up = false; 
+                    intervaloBala += Time.deltaTime;
+                    if (intervaloBala >= 0.2f)
+                    {
+                        Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+                        intervaloBala = 0;
+                    }
                 }
             }
 
-        }
-        else
-        {
+            
+
+           }
+           else
+           {
             intervaloBala = 0;
             shottan = false;
-        }
-        //Debug.Log(intervaloBala);
+           }
+            //Debug.Log(intervaloBala);
 
     }
 
@@ -168,7 +237,7 @@ public class RPlayer : MonoBehaviour
 
     public void DecrementarPowerUps()
     {
-        numeroPowerUps--;
+        numeroPowerUps++;
         hud.SetPower(numeroPowerUps);
     }
 
@@ -193,7 +262,7 @@ public class RPlayer : MonoBehaviour
                 else animator.Play("shootUP");
 
                 animator.SetBool("aire", false);
-                shottan = false;
+                //shottan = false;
             }
            
 
