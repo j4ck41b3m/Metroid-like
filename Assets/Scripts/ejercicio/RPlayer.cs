@@ -6,18 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class RPlayer : MonoBehaviour
 {
-    public int velocidad;
+    public float velocidad;
     public Rigidbody2D jugador;
     public SpriteRenderer spritee;
+    private SpriteRenderer blast, upblast, runsu;
     private int fuerzaSalto;
     private Animator animator;
     public int puntuacion;
     public int vidas;
-    public bool vulnerable, shottan, up, charged, runnin;
+    public bool vulnerable, shottan, up, charged, runnin, cargao;
     public int numeroPowerUps;
 
     public int tiempoNivel;
-    private float tiempoInicio, intervaloBala;
+    private float tiempoInicio, intervaloBala, tiempoCarga;
     private int tiempoEmpleado;
     
     public Canvas canvas;
@@ -31,14 +32,18 @@ public class RPlayer : MonoBehaviour
 
     public LayerMask Ground;
 
-    public GameObject blaster, upblaster, bullet, upbullet, super;
+    public GameObject blaster, upblaster, bullet, upbullet, super, runsuper;
     // Start is called before the first frame update
     void Start()
     {
+        blast = blaster.GetComponent<SpriteRenderer>();
+        upblast = upblaster.GetComponent<SpriteRenderer>();
+        runsu = runsuper.GetComponent<SpriteRenderer>();
+
         jugador = GetComponent<Rigidbody2D>();
         spritee = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-        velocidad = 10;
+        velocidad = 7.5f;
         fuerzaSalto = 10;
 
         vulnerable = true;
@@ -101,7 +106,9 @@ public class RPlayer : MonoBehaviour
 
         hud.SetTiempo(tiempoEmpleado);
         // hud.SetTiempo(Time.deltaTime);
-
+        
+        //////////////// D I S P A R O S////////////////
+        
         if (Input.GetKey(KeyCode.W))
         {
             up = true;
@@ -118,6 +125,7 @@ public class RPlayer : MonoBehaviour
         {
             runnin = false;
         }
+        
 
             if (Input.GetKey(KeyCode.Mouse0))
            {
@@ -125,20 +133,39 @@ public class RPlayer : MonoBehaviour
 
             shottan = true;
 
+            if (charged)
+            {
+                tiempoCarga += Time.deltaTime;
+                if (tiempoCarga > 2)
+                {
+                    runsu.color = Color.red;
+                    blast.color = Color.red;
+                    upblast.color = Color.red;
+
+                    cargao = true;
+                }
+            }
+
             if (TocandoSuelo() == true)
             {
                 if (runnin)
                 {
-                    animator.Play("runNshoot");
                     up = false;
-                    if (intervaloBala >= 0.2f)
+
+
+                    if (charged == true)
                     {
-                        if (charged == true)
-                        {
-                        }
-                        else
+                        animator.Play("runNshoot");
+                        spritee.color = Color.yellow;
+
+                    }
+                    else if (intervaloBala >= 0.2f)
+                    {
                         Instantiate(bullet, blaster.transform.position, Quaternion.identity);
+                        animator.Play("runNcharge");
                         intervaloBala = 0;
+
+
                     }
 
                 }
@@ -152,7 +179,7 @@ public class RPlayer : MonoBehaviour
 
                         if (charged == true)
                         {
-                            animator.Play("chargeUP");
+                           // animator.Play("chargeUP");
                             spritee.color = Color.yellow;
 
                         }
@@ -161,7 +188,9 @@ public class RPlayer : MonoBehaviour
                             Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
                             intervaloBala = 0;
                         }
-                        
+
+                        //animator.Play("shootUP");
+
 
                         up = true;
                     }
@@ -186,8 +215,12 @@ public class RPlayer : MonoBehaviour
                 animator.Play("onAir");
                 if (up == true)
                 {
+                    if (charged)
+                    {
+                        spritee.color = Color.yellow;
 
-                    if (intervaloBala >= 0.2f)
+                    }
+                    else if (intervaloBala >= 0.2f)
                     {
                         Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
                         intervaloBala = 0;
@@ -196,7 +229,12 @@ public class RPlayer : MonoBehaviour
                 }
                 else if (up == false)
                 {
-                    if (intervaloBala >= 0.2f)
+                    if (charged)
+                    {
+                        spritee.color = Color.yellow;
+
+                    }
+                    else if (intervaloBala >= 0.2f)
                     {
                         Instantiate(bullet, blaster.transform.position, Quaternion.identity);
                         intervaloBala = 0;
@@ -211,7 +249,7 @@ public class RPlayer : MonoBehaviour
            {
             intervaloBala = 0;
             shottan = false;
-
+             
         }
         //Debug.Log(intervaloBala);
 
@@ -219,21 +257,49 @@ public class RPlayer : MonoBehaviour
         {
             if (charged)
             {
-                if (!runnin)
+                if (cargao)
                 {
-                    if (up == false)
-                        Instantiate(super, blaster.transform.position, Quaternion.identity);
-                    else if (up == true)
-                        Instantiate(super, upblaster.transform.position, Quaternion.identity);
-                }
-                else
-                Instantiate(super, blaster.transform.position, Quaternion.identity);
-                
-                spritee.color = Color.white;
-                DecrementarPowerUps();
-                print("pingas");
-            }
+                    if (TocandoSuelo() == true)
+                    {
+                        if (!runnin)
+                        {
+                            if (up == false)
+                                Instantiate(super, blaster.transform.position, Quaternion.identity);
+                            else if (up == true)
+                                Instantiate(super, upblaster.transform.position, Quaternion.identity);
+                        }
+                        else
+                            Instantiate(super, blaster.transform.position, Quaternion.identity);
+                    }
+                    else
+                    {
+                        if (!runnin)
+                        {
+                            if (up == false)
+                                Instantiate(super, blaster.transform.position, Quaternion.identity);
+                            else if (up == true)
+                                Instantiate(super, upblaster.transform.position, Quaternion.identity);
+                        }
+                        else
+                            Instantiate(super, blaster.transform.position, Quaternion.identity);
+                    }
 
+                        
+
+                    spritee.color = Color.white;
+                    runsu.color = Color.white;
+                    blast.color = Color.white;
+                    upblast.color = Color.white;
+                    DecrementarPowerUps();
+                    print("pingas");
+                    cargao = false;
+                }
+                
+
+
+            }
+            spritee.color = Color.white;
+            tiempoCarga = 0;
 
         }
 
@@ -295,10 +361,20 @@ public class RPlayer : MonoBehaviour
                     animator.Play("Iddle");
 
            }
-                else if(charged != true)
-                animator.Play("shootUP");
 
-                animator.SetBool("aire", false);
+            if (up)
+            {
+                if (shottan && charged)
+                {
+                    animator.Play("chargeUP");
+
+                }
+                else animator.Play("shootUP");
+
+            }
+
+
+            animator.SetBool("aire", false);
                 //shottan = false;
             
            
@@ -347,12 +423,14 @@ public class RPlayer : MonoBehaviour
         spritee.color = Color.white;
     }
 
-    public void QuitarVidas()
+    public void QuitarVidas(int daño)
     {
         if (vulnerable)
         {
             vulnerable = false;
-            if (--vidas == 0)
+            vidas -= daño;
+
+            if (vidas <= 0)
             {
                 FinJuego();
             }
@@ -363,8 +441,17 @@ public class RPlayer : MonoBehaviour
         
         
     }
+
+    public void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bound"))
+            FinJuego();
+    }
+
+
     public void FinJuego()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
 }

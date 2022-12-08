@@ -4,30 +4,46 @@ using UnityEngine;
 
 public class enemigo : MonoBehaviour
 {
-    public GameObject Enemigo;
+    public GameObject punto, mouth, blast, boom;
     public float velocidad;
     public Vector3 posicionInicial;
     public Vector3 posicionFinal;
-    private float duracionTemblor;
-    public bool moviendoAFin, vulnerable;
+    private float duracionTemblor, intervalo;
+    public bool moviendoAFin, vulnerable, crab, craw;
     public int vidas;
     private SpriteRenderer spritee;
     // Start is called before the first frame update
     void Start()
     {
+        
+
         vulnerable = true;
         posicionInicial = transform.position;
-        posicionFinal = new Vector3(posicionInicial.x, posicionInicial.y + 4, posicionInicial.z);
+        posicionFinal = punto.transform.position ;
+        //posicionFinal = new Vector3(posicionInicial.x + 4, posicionInicial.y, posicionInicial.z);
         moviendoAFin = true;
-        velocidad = 5.5f;
+        //velocidad = 4f;
         duracionTemblor = 1;
         spritee = GetComponent<SpriteRenderer>();
+        if (crab == true)
+            spritee.flipX = true;
+
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         MoverEnemigo();
+        if (craw == true)
+        {
+            intervalo += Time.deltaTime;
+            if (intervalo >= 3)
+            {
+                Instantiate(blast, mouth.transform.position, Quaternion.identity);
+                intervalo = 0;
+            }
+        }
     }
 
     private void MoverEnemigo()
@@ -37,10 +53,15 @@ public class enemigo : MonoBehaviour
         if (transform.position == posicionFinal)
         {
             moviendoAFin = false;
+            if(crab)
+            spritee.flipX= false;
         }
         if (transform.position == posicionInicial)
         {
             moviendoAFin = true;
+            if(crab)
+            spritee.flipX = true;
+
         }
     }
 
@@ -57,19 +78,27 @@ public class enemigo : MonoBehaviour
             vidas -= daño;
             if (vidas <= 0)
             {
-                Destroy(gameObject);
+                spritee.enabled = false;
+                Instantiate(boom, transform.position, Quaternion.identity);
+
+                Invoke("Destroy", 0.01f);
             }
             spritee.color = Color.red;
-            Invoke("HacerVulnerable", 1f);
+            Invoke("HacerVulnerable", 0.01f);
         }
 
 
+    }
+
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<RPlayer>().QuitarVidas();
+            collision.gameObject.GetComponent<RPlayer>().QuitarVidas(1);
 
 
         }

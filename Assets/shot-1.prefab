@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0
-  "da\xF1o": 2
+  "da\xF1o": 1
   player: {fileID: 0}
 --- !u!70 &7371502063573083211
 CapsuleCollider2D:
