@@ -7,7 +7,7 @@ public class controlBotones : MonoBehaviour
 {
     public void OnJugar()
     {
-        SceneManager.LoadScene("Nivel1");
+        SceneManager.LoadScene(1);
     }
 
     public void OnSalir()
@@ -17,13 +17,18 @@ public class controlBotones : MonoBehaviour
 
     public void OnMenu()
     {
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene(0);
 
     }
 
     public void OnCredits()
     {
-        SceneManager.LoadScene("Creditos");
+        SceneManager.LoadScene(4);
 
+    }
+
+    public void OnStory()
+    {
+        SceneManager.LoadScene(5);
     }
 }

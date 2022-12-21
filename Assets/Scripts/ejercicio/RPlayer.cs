@@ -10,7 +10,7 @@ public class RPlayer : MonoBehaviour
     public Rigidbody2D jugador;
     public SpriteRenderer spritee;
     private SpriteRenderer blast, upblast, runsu;
-    private int fuerzaSalto;
+    private float fuerzaSalto;
     private Animator animator;
     public int puntuacion;
     public int vidas;
@@ -18,16 +18,16 @@ public class RPlayer : MonoBehaviour
     public int numeroPowerUps;
 
     public int tiempoNivel;
-    private float tiempoInicio, intervaloBala, tiempoCarga;
+    private float tiempoInicio, intervaloBala, tiempoCarga, interSalto;
     private int tiempoEmpleado;
     
     public Canvas canvas;
     private ControlHud hud;
 
-    public AudioClip sonidoPower;
-    public AudioClip sonidoVida;
+    public AudioClip sonidoPower, sonidoCarga, sonidoDisparo, sonidoSuper, sonidoSalto, sonidoDaño;
 
-    private AudioSource audio;
+
+    private AudioSource audioP;
     public ControlDatosJuego datosJuego;
 
     public LayerMask Ground;
@@ -44,7 +44,7 @@ public class RPlayer : MonoBehaviour
         spritee = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         velocidad = 7.5f;
-        fuerzaSalto = 10;
+        fuerzaSalto = 11f;
 
         vulnerable = true;
 
@@ -135,6 +135,8 @@ public class RPlayer : MonoBehaviour
 
             if (charged)
             {
+                audioP.PlayOneShot(sonidoCarga, 0.05f);
+
                 tiempoCarga += Time.deltaTime;
                 if (tiempoCarga > 2)
                 {
@@ -161,6 +163,8 @@ public class RPlayer : MonoBehaviour
                     }
                     else if (intervaloBala >= 0.2f)
                     {
+                        audioP.PlayOneShot(sonidoDisparo);
+
                         Instantiate(bullet, blaster.transform.position, Quaternion.identity);
                         animator.Play("runNcharge");
                         intervaloBala = 0;
@@ -185,6 +189,8 @@ public class RPlayer : MonoBehaviour
                         }
                         else if (intervaloBala >= 0.2f)
                         {
+                            audioP.PlayOneShot(sonidoDisparo);
+
                             Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
                             intervaloBala = 0;
                         }
@@ -222,6 +228,8 @@ public class RPlayer : MonoBehaviour
                     }
                     else if (intervaloBala >= 0.2f)
                     {
+                        audioP.PlayOneShot(sonidoDisparo);
+
                         Instantiate(upbullet, upblaster.transform.position, Quaternion.identity);
                         intervaloBala = 0;
                     }
@@ -236,6 +244,8 @@ public class RPlayer : MonoBehaviour
                     }
                     else if (intervaloBala >= 0.2f)
                     {
+                        audioP.PlayOneShot(sonidoDisparo);
+
                         Instantiate(bullet, blaster.transform.position, Quaternion.identity);
                         intervaloBala = 0;
                     }
@@ -257,8 +267,11 @@ public class RPlayer : MonoBehaviour
         {
             if (charged)
             {
+
                 if (cargao)
                 {
+                    audioP.PlayOneShot(sonidoSuper, 2f);
+
                     if (TocandoSuelo() == true)
                     {
                         if (!runnin)
@@ -308,7 +321,8 @@ public class RPlayer : MonoBehaviour
     public void Shoot()
     {
         Instantiate(bullet, blaster.transform.position, Quaternion.identity);
-        
+        audioP.PlayOneShot(sonidoDisparo);
+
     }
 
     private void Ganado()
@@ -330,6 +344,8 @@ public class RPlayer : MonoBehaviour
 
     public void IncrementarPowerUps()
     {
+        audioP.PlayOneShot(sonidoPower);
+
         numeroPowerUps++;
         hud.SetPower(numeroPowerUps);
     }
@@ -347,6 +363,13 @@ public class RPlayer : MonoBehaviour
         {
 
             animator.Play("onAir");
+            interSalto += Time.deltaTime;
+            if (interSalto >= 0.25f)
+            {
+                audioP.PlayOneShot(sonidoSalto);
+                interSalto = 0;
+            }
+
 
         }
         else
@@ -406,7 +429,7 @@ public class RPlayer : MonoBehaviour
 
     private void Awake()
     {
-        audio = GetComponent<AudioSource>();
+        audioP = GetComponent<AudioSource>();
     }
     public bool TocandoSuelo()
     {
@@ -435,6 +458,7 @@ public class RPlayer : MonoBehaviour
                 FinJuego();
             }
             hud.SetVidas(vidas);
+            audioP.PlayOneShot(sonidoDaño);
             spritee.color = Color.red;
             Invoke("HacerVulnerable", 1f);
         }

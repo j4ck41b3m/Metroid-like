@@ -10,13 +10,15 @@ public class enemigo : MonoBehaviour
     public Vector3 posicionFinal;
     private float duracionTemblor, intervalo;
     public bool moviendoAFin, vulnerable, crab, craw;
-    public int vidas;
+    public float vidas;
     private SpriteRenderer spritee;
+    private AudioSource Eaudio;
+    public AudioClip blas;
     // Start is called before the first frame update
     void Start()
     {
-        
 
+        Eaudio = GetComponent<AudioSource>();
         vulnerable = true;
         posicionInicial = transform.position;
         posicionFinal = punto.transform.position ;
@@ -42,6 +44,7 @@ public class enemigo : MonoBehaviour
             {
                 Instantiate(blast, mouth.transform.position, Quaternion.identity);
                 intervalo = 0;
+                Eaudio.PlayOneShot(blas);
             }
         }
     }
@@ -70,7 +73,7 @@ public class enemigo : MonoBehaviour
         vulnerable = true;
         spritee.color = Color.white;
     }
-    public void QuitarVidas(int daño)
+    public void QuitarVidas(float daño)
     {
         if (vulnerable)
         {

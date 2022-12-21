@@ -6,7 +6,8 @@ public class Bullet : MonoBehaviour
 {
     private bool derecha;
     private bool up;
-    public int speed, daño;
+    public int speed;
+    public float daño;
     //private float velo;
     public GameObject player;
     // Start is called before the first frame update

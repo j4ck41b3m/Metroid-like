@@ -9,10 +9,15 @@ public class ControlHud : MonoBehaviour
     public TextMeshProUGUI vidasTxt;
     public TextMeshProUGUI powerTxt; 
     public TextMeshProUGUI timeTxt;
+    public TextMeshProUGUI StartMonsterTxt;
+    public TextMeshProUGUI CurrentMonsterTxt;
+    public Image ball;
+
+
 
     public void SetVidas(int vidas)
     {
-        vidasTxt.text = "Vidas:" + vidas;
+        vidasTxt.text = ":" + vidas;
     }
 
     public void SetTiempo(int tiempo)
@@ -26,7 +31,29 @@ public class ControlHud : MonoBehaviour
 
     public void SetPower(int power)
     {
-        powerTxt.text = "Power Up:" + power;
+        powerTxt.text = ":" + power;
        
+    }
+
+    public void SetThenMonster(int monster)
+    {
+        StartMonsterTxt.text = "/ " + monster;
+    }
+
+    public void SetNowMonster(int left)
+    {
+        CurrentMonsterTxt.text = ":" + left;
+        if (left == 0)
+        {
+            SetBall();
+        }
+    }
+
+    public void SetBall()
+    {
+        
+        
+            ball.color = Color.blue;
+        
     }
 }
