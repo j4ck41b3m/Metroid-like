@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class RPlayer : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class RPlayer : MonoBehaviour
     private SpriteRenderer blast, upblast, runsu;
     private float fuerzaSalto;
     private Animator animator;
-    public int puntuacion;
+    public int puntuacion, vector;
     public int vidas;
     public bool vulnerable, shottan, up, charged, runnin, cargao;
     public int numeroPowerUps;
@@ -32,7 +33,8 @@ public class RPlayer : MonoBehaviour
 
     public LayerMask Ground;
 
-    public GameObject blaster, upblaster, bullet, upbullet, super, runsuper;
+    public GameObject blaster, upblaster, bullet, upbullet, super, runsuper, Apanel, Bpanel;
+    public Button B_shoot, B_jump, B_up, B_left, B_right;
     // Start is called before the first frame update
     void Start()
     {
@@ -56,7 +58,7 @@ public class RPlayer : MonoBehaviour
 
         datosJuego = GameObject.Find("DatosJuego").GetComponent<ControlDatosJuego>();
 
-
+        vector = 0;
     }
 
     // Update is called once per frame
@@ -89,10 +91,7 @@ public class RPlayer : MonoBehaviour
 
         }
         Debug.Log(TocandoSuelo());
-        if (Input.GetKeyDown(KeyCode.Space) && TocandoSuelo() == true)
-        {
-            jugador.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
-        }
+      
         AnimarJugador();
         //Debug.Log(jugador.velocity.x);
         //Debug.Log(Input.GetAxis("Horizontal"));
@@ -106,17 +105,6 @@ public class RPlayer : MonoBehaviour
 
         hud.SetTiempo(tiempoEmpleado);
         // hud.SetTiempo(Time.deltaTime);
-        
-        //////////////// D I S P A R O S////////////////
-        
-        if (Input.GetKey(KeyCode.W))
-        {
-            up = true;
-           // shottan = false;
-           
-        }
-        else up = false;
-
         if (jugador.velocity.x > 0.005f || jugador.velocity.x < -0.005f)
         {
             runnin = true;
@@ -125,6 +113,24 @@ public class RPlayer : MonoBehaviour
         {
             runnin = false;
         }
+#if UNITY_STANDALONE
+        Apanel.SetActive(false);
+        Bpanel.SetActive(false);
+        if (Input.GetKeyDown(KeyCode.Space) && TocandoSuelo() == true)
+        {
+            jugador.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
+        }
+        //////////////// D I S P A R O S////////////////
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            up = true;
+           // shottan = false;
+           
+        }
+        else up = false;
+
+       
         
 
             if (Input.GetKey(KeyCode.Mouse0))
@@ -315,14 +321,48 @@ public class RPlayer : MonoBehaviour
             tiempoCarga = 0;
 
         }
+#endif
+#if UNITY_ANDROID
+
+     
+        Apanel.SetActive(true);
+        Bpanel.SetActive(true);
+        
+
+
+#endif
 
     }
 
+    public void Jump()
+    {
+        if (TocandoSuelo() == true)
+        {
+            jugador.AddForce(Vector2.up * fuerzaSalto, ForceMode2D.Impulse);
+
+        }
+
+    }
     public void Shoot()
     {
         Instantiate(bullet, blaster.transform.position, Quaternion.identity);
         audioP.PlayOneShot(sonidoDisparo);
 
+    }
+
+    public void Left()
+    {
+        vector = -1;
+    }
+
+    public void Right()
+    {
+        vector = 1;
+    }
+     
+    public void None()
+    {
+        vector = 0;
     }
 
     private void Ganado()
@@ -419,7 +459,7 @@ public class RPlayer : MonoBehaviour
 
     private void FixedUpdate()
     {
-        float entradaX = Input.GetAxis("Horizontal");
+       float entradaX = Input.GetAxis("Horizontal");
 
         jugador.velocity = new Vector2(entradaX * velocidad, jugador.velocity.y);
 
